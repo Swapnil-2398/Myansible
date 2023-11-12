@@ -1,0 +1,12 @@
+---
+- name: create a file
+  hosts: all
+  tasks:
+     - name: myfile
+       file:
+          name: /tmp/file2
+          state: touch
+          mode: 770
+          owner: root
+          group: anusha
+...

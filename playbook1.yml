@@ -1,0 +1,13 @@
+---
+- name: create a user on all servers
+  hosts: all
+  tasks:
+   - name: user creation
+     user:
+       name: Swapnil
+       password: admin
+       uid: 1002
+       home: /home/Swapnil
+       shell: /bin/bash
+       comment: "a super user"
+...
