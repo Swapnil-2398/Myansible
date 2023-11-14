@@ -1,0 +1,26 @@
+---
+ - name: Configuring apache2 
+   hosts: all
+   tasks: 
+      - name: Install apche2
+        apt:
+          name: apache2
+          state: present
+          update_cache: yes
+      - name: Edit the index.html file
+        copy:
+          content: "Hello Swapnil !"
+          dest: /var/www/html/index.html
+      - name: Restarting apache3 service
+        service:
+          name: apache2
+          state: restarted
+      - name: Check apache response on serve-1
+        uri:
+          url: http://172.31.2.190
+          status_code: 200
+      - name: Check apache response on server-2
+        uri:
+           url: http://172.31.2.43
+           status_code: 200
+...
