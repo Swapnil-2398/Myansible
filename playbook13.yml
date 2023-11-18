@@ -1,0 +1,14 @@
+---
+- name: install/uninstall
+  hosts: all
+  tasks:
+    - name: install
+      apt:
+        name: "{{item.x}}"
+        state: "{{item.y}}"
+        update_cache: "{{item.z}}"
+      with_items:
+       - {x: git,y: present,z: yes}
+       - {x: docker,y: latest,z: yes}
+       - {x: firewalld,y: present,z: yes}
+...
