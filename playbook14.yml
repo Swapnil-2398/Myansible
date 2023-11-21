@@ -1,0 +1,18 @@
+---
+- name: create a user
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: user creation
+      user:
+        name: "{{item.a}}"
+        uid: "{{item.b}}"
+        password: "{{item.c}}"
+      with_items:
+        - {a: swapnil,b: 20,c: admin}
+        - {a: anish,b: 10,c: admin}
+      tags: User Creation
+...
+        
+
