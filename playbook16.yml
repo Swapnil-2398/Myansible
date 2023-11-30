@@ -1,0 +1,14 @@
+---
+- name: Implementing when condition
+  hosts: all
+  gather_facts: false
+  become: yes
+  vars:
+    - a: 40
+  tasks:
+   - name: Create a dir
+     file:
+       name: /tmp/dir1
+       state: directory
+     when: a == 10
+...
