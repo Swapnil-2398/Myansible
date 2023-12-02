@@ -1,0 +1,6 @@
+---
+- name: edit indext.html file
+  copy:
+    content: "Welcome to apache world!"
+    dest: /var/www/html/index.html
+...

@@ -1,0 +1,72 @@
+---
+- name: Install req s/w's on devserver
+  hosts: Devserver
+  tasks:
+    - name: Install s/w's
+      apt:
+        name: "{{item.a}}"
+        state: "{{item.b}}"
+        update_cache: "{{item.c}}"
+      with_items:
+       - {a: openjdk-11-jdk,b: present,c: yes}
+       - {a: git,b: present,c: no }
+       - {a: maven,b: present,c: no}
+- name: Install req s/w's on qaserver
+  hosts: Qaserver
+  tasks:
+    - name: Install s/w's
+      apt:
+        name: "{{item.a}}"
+        state: "{{item.b}}"
+        update_cache: "{{item.c}}"
+      with_items:
+       - {a: openjdk-11-jdk,b: present,c: yes}
+       - {a: git,b: present,c: no }
+       - {a: tomcat9,b: present,c: no}
+       - {a: tomcat9-admin,b: present,c: no}
+
+- name: Install req s/w's on Prodserver
+  hosts: Prodserver
+  tasks:
+    - name: Install s/w's
+      apt:
+        name: "{{item.a}}"
+        state: "{{item.b}}"
+        update_cache: "{{item.c}}"
+      with_items:
+       - {a: tomcat9,b: present,c: yes}
+       - {a: tomcat9-admin,b: present,c: no }
+- name: Continuous Download and Continuous Build
+  hosts: Devserver
+  tasks: 
+   - name: Download the dev code from the github
+     git:
+      repo: https://github.com/intelliqittrainings/maven.git
+      dest: dev-git
+   - name: Create the artifact
+     shell: cd dev-git;mvn package   
+   - name: Fetch the artifact from devserver to controller
+     fetch:
+      src: dev-git/webapp/target/webapp.war
+      dest: /tmp
+- name: Continuous Deployment and Continuous Testing
+  hosts: Qaserver
+  tasks:
+    - name: Deploy into tomcat9 on qaserver
+      copy:
+        src: /tmp/172.31.2.190/dev-git/webapp/target/webapp.war
+        dest: /var/lib/tomcat9/webapps/testapp.war
+    - name: Download the selenium scripts from github
+      git:
+        repo: https://github.com/intelliqittrainings/FunctionalTesting.git
+        dest: test-git
+    - name: Run the selenium scripts
+      shell: java -jar test-git/testing.jar
+- name: Continuous Delivery
+  hosts: Prodserver
+  tasks: 
+    - name: Deploy into tomcat9 on Prodserver
+      copy:
+        src: /tmp/172.31.2.190/dev-git/webapp/target/webapp.war
+        dest: /var/lib/tomcat9/webapps/prodapp.war
+...
