@@ -1,0 +1,8 @@
+---
+- name: Print OS info
+  hosts: all
+  tasks:
+    - name: OS info
+      debug:
+        msg: "{{ansible_distribution}}"
+...

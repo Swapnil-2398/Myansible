@@ -1,0 +1,35 @@
+---
+- name: Install apache2/httpd on Ubuntu & SLES server
+  hosts: all
+  tasks:
+   - name: Install apache2 on ubuntu server
+     apt:
+       name: apache2
+       state: present
+       update_cache: yes
+     when: ansible_distribution == "Ubuntu"
+   - name: Install httpd on SLES server
+     zypper:
+       name: httpd
+       state: present
+       update_cache: yes
+     when: ansible_distribution == "SLES"
+   - name: Edit index.html file
+     copy:
+       content: "Welcome to apache world"
+       dest: /var/www/html/index.html
+     when: ansible_distribution == "Ubuntu"
+   - name: Edit index.html file on Suse
+     copy: 
+       content: "Welcome to apache world"
+       dest: /srv/www/htdocs/index.html
+     when: ansible_distribution == "SLES"
+   - name: Check the URL's reaching or not
+     uri:
+       url: "{{item}}"
+       status_code: 200
+     with_items:
+       - 8080://172.31.2.190
+       - http://172.31.2.43
+       - http://172.31.36.139
+...

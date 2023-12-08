@@ -1,0 +1,25 @@
+---
+- name: Error handling or exception handling
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - block:
+         - name: Install git software with apt
+           apt:
+             name: git
+             state: present
+             update_cache: yes
+      rescue:
+         - name: Install git with yum
+           yum:
+             name: git
+             state: present
+             update_cache: yes
+      always:
+         - name: Display msg
+           debug:
+             msg: "Git installation successsfull"
+
+...
+
